@@ -1,0 +1,124 @@
+.textsParent {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  color: white;
+  height: 100%;
+  width: 100%;
+  font-size: 22px;
+  grid-row: 1;
+  grid-column: 1;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  justify-content: flex-start;
+}
+
+.notesParent {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  color: white;
+  width: 100%;
+  font-size: 22px;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  justify-content: flex-start;
+}
+
+
+.textsScreenParent {
+  height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+.overlayParent {
+  background-color: #808080a3;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  grid-column: 1;
+  z-index: 5;
+  grid-row: 1;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.homeParent{
+    display: grid;
+    height: 100%;
+    overflow: hidden;
+}
+.overlayBody {
+  background-color: white;
+  border-radius: 10px;
+  display: flex;
+  padding: 10px 20px;
+  flex-direction: column;
+  justify-content: center;
+  grid-column: 1;
+  grid-row: 1;
+  align-items: center;
+  row-gap: 16px;
+  width: calc(100% - 100px);
+}
+
+.optionBackground {
+  background-color: #0cdada;
+  color: white;
+  border-radius: 8px;
+  text-align: center;
+  padding: 5px 10px;
+  width: 70%;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.messageItem {
+  background-color: #07b2b2;
+  color: white;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  overflow-wrap: break-word;
+  overflow: visible;
+  width: 100vw - 10px;
+  text-align: center;
+  border-radius: 8px;
+  padding: 10px 15px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px
+}
+
+.noMessageTexts {
+  color: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  border-radius: 15px;
+  align-self: center;
+  font-size: 20px;
+  padding: 10px 30px;
+  background-color: darkcyan;
+}
+
+
+.appBar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    margin: 0px 5px;
+    background-color:#0cdada;
+    border-radius: 5px;
+    padding: 10px 20px;
+    z-index: 4;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 15px;
+    background-color: 0cdada;
+}

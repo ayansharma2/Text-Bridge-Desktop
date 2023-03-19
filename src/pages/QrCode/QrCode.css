@@ -1,0 +1,14 @@
+.message{
+    color: black;
+    font-size: larger;
+}
+.qrCodeContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    height: 100%;
+    align-items: center;
+}

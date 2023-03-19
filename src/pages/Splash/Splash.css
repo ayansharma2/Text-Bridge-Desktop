@@ -1,0 +1,14 @@
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: aqua;
+    width: 100%;
+}
+
+.splashImage {
+    width: 30%;
+    border-radius: 10px;
+    aspect-ratio: 1/1;
+}
