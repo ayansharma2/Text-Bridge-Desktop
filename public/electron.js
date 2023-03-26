@@ -10,22 +10,21 @@ const database = new sqlite3.Database('./public/db.sqlite3', (err) => {
 });
 
 
-function initDatabase(){
-    database.run("CREATE TABLE IF NOT EXISTS `notes` ( `id` INT,`note` VARCHAR(10000),`time` VARCHAR(20));")
-
+function initDatabase() {
+    database.run("CREATE TABLE IF NOT EXISTS `notes` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT,`note` VARCHAR(10000),`time` VARCHAR(20),`receivedFrom` VARCHAR(20));")
 }
 
 initDatabase()
 
 function createWindow() {
 
-    const icon  = path.join(__dirname+'/appImage.icns')
+    const icon = path.join(__dirname + '/appImage.icns')
     console.log(icon)
     const win = new BrowserWindow({
         width: 800,
         height: 600,
         title: "Text Bridge",
-        webPreferences: { nodeIntegration: true, contextIsolation: false,preload:path.join(__dirname, 'renderer.js') },
+        webPreferences: { nodeIntegration: true, contextIsolation: false, preload: path.join(__dirname, 'renderer.js') },
         icon
     });
 
@@ -61,12 +60,20 @@ app.on('activate', () => {
 
 ipcMain.on('current-text', (event, arg) => {
     event.returnValue = clipboard.readText()
- })
+})
 
- database.run(`INSERT INTO notes (id,note,time) VALUES (1,"asdasfasdas","2008-11-11")`,(rows,error)=>{
-    database.all("SELECT * from notes",(error,rows)=>{
-        console.log("Data Received : ",rows)
+ipcMain.on('save-text', (event, arg) => {
+    console.log("Received Args ", arg)
+    const query = "INSERT INTO notes (note,time) VALUES ('" + arg.note + "'," + "'" + arg.time + "')"
+    database.run(query, (rows, error) => { })
+})
+
+
+ipcMain.handle("get-all-texts", (event, args) => {
+    return new Promise((resolve, reject) => {
+        database.all("SELECT * from notes order by time", (error, rows) => {
+            console.log("Found Values : ", rows)
+            resolve(rows)
+        })
     })
- })
-
- 
+})

@@ -3,56 +3,45 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addText } from "../../redux/texts";
 import Constants from "../../Constansts.js";
-import search from "../../images/search.svg"
+import search from "../../images/search.svg";
 import "./Home.css";
+import useInterval from "../../hooks/useInterval";
 const { ipcRenderer } = window.require("electron");
-let count = 0;
 const Home = () => {
-  const dispatch = useDispatch();
   const [isOverlayVisible, setIsOverLayVisible] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState({});
   const authToken = useSelector((state) => state.auth.authToken);
   const currentDevice = useSelector((state) => state.currentDevice);
   const devices = useSelector((state) => state.devices.devicesArray);
-  const [textList, setTextList] = useState(
-    JSON.parse(localStorage.getItem("messageList"))
-  );
-  if (textList == null) {
-    console.log("Text List Initialized");
-    setTextList([]);
-  }
+  const [textList, setTextList] = useState([]);
   useEffect(() => {
-    const interval = setInterval(() => {
-      let currentText = ipcRenderer.sendSync("current-text");
-      if (textList.length == 0) {
-        dispatch(addText({ text: currentText }));
-      } else if (currentText != textList[0].text) {
-        dispatch(addText({ text: currentText, createdAt: Date.now() }));
-      }
-    }, 300);
-    return () => {
-      clearInterval(interval);
-      localStorage.setItem("messageList", JSON.stringify(textList));
-    };
-  });
-  const message = useSelector((state) => state.text.message);
-  if (
-    message.text != undefined &&
-    message.text != "" &&
-    textList != null &&
-    (textList.length == 0 || textList[0].text != message.text)
-  ) {
-    setTextList((currentList) => {
-      if (Array.isArray(currentList)) {
-        currentList.unshift(message);
-      }
-
-      return currentList;
+    ipcRenderer.invoke("get-all-texts").then((result) => {
+      setTextList(result);
     });
-  }
+  }, []);
+
+  useInterval(() => {
+    let currentText = ipcRenderer.sendSync("current-text");
+    if (
+      textList.length == 0 ||
+      (currentText != textList[0].note &&
+        currentText != textList[textList.length - 1].note)
+    ) {
+      const note = { note: currentText, createdAt: Date.now() };
+      console.log("Current Note ", note);
+      setTextList((list) => [note, ...list]);
+      console.log("List After Updating ", textList.length);
+      ipcRenderer.send("save-text", {
+        id: 0,
+        note: currentText,
+        time: Date.now(),
+      });
+    }
+  }, 300);
 
   const renderItem = () => {
     if (textList == null || textList.length == 0 || !Array.isArray(textList)) {
+      console.log("Rendering No Message Text");
       return (
         <span className="noMessageTexts">
           You Don't have any texts right now
@@ -67,8 +56,7 @@ const Home = () => {
             showOptions(index);
           }}
         >
-          console.log(value)
-          <span>{value.text}</span>
+          <span>{JSON.stringify(value.note)}</span>
         </div>
       ));
     }
@@ -81,7 +69,7 @@ const Home = () => {
 
   const sendMessage = (device, message) => {
     const body = {
-      message: message.text,
+      message: message.note,
       fcmToken: device.fcmToken,
       deviceId: device.deviceId,
       currentDevice: currentDevice,
@@ -130,11 +118,11 @@ const Home = () => {
 
   const renderAppBar = () => {
     return (
-        <div className="appBar">
+      <div className="appBar">
         <span>Text Bridge</span>
-        <img src={search}/>
-    </div>
-    )
+        <img src={search} />
+      </div>
+    );
   };
 
   return (
